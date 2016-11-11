@@ -2,6 +2,7 @@ import sys
 import copy
 from termcolor import colored as cl
 
+# other useful functions
 def swap(a, b):
     t = a
     a = b
@@ -11,8 +12,8 @@ def gcd(p, q):
     if q == 0:
         return p
     return gcd(q, p % q)
-# some useful functions
 
+# rational number
 class number:
     def __init__(self, p = 0, q = 1):
         if q < 0:
@@ -47,9 +48,8 @@ class number:
             return str(self.p)
         else:
             return str(self.p) + '/' + str(self.q)
-# rational number
    
-
+# matrix
 class matrix:
     def __init__(self, n = 0, m = 0, e = []): 
         self.n = n
@@ -204,10 +204,73 @@ class matrix:
             for j in range(now.m):
                 row += [str(now.e[i][j])]
             print str(row).replace('\'', '')
-            
-    
-# matrix
 
+    def solve(self):
+        t = self.guass()
+        if (t.n == t.m):
+            print "It seems that there is no solution to this equation."
+            return 
+        sol = [0 for i in range(t.m - 1)]
+        isPivot = [False for i in  range(t.m - 1)]
+        for x in range(t.n)[::-1]:
+            pivot = -1
+            for i in range(t.m - 1):
+                if t.e[x][i] != number(0):
+                    pivot = i
+                    break 
+            
+            isPivot[pivot] = True
+            sol[pivot] = t.e[x][t.m - 1] / t.e[x][pivot]
+            for i in range(0, x):
+                t.e[i][t.m - 1] -= sol[pivot] * t.e[i][pivot]
+        
+        for i in range(t.m - 1):
+            sol[i] = str(sol[i])
+        print str(sol).replace('\'', '')
+        print '+'
+        
+        free = []
+        for i in range(t.m - 1):
+            if isPivot[i] == False:
+                free += [i]
+        freeCount = len(free)
+        
+        k = [[number(0) for i in range(t.m - 1)] for i in range(t.m - 1)]
+        for x in range(t.n)[::-1]:
+            pivot = -1
+            for i in range(t.m - 1):
+                if (pivot == -1):
+                    if t.e[x][i] != number(0):
+                        pivot = i
+                else:
+                    if isPivot[i]:
+                        for j in range(t.m - 1):
+                            k[pivot][j] -= k[i][j] * t.e[x][i] / t.e[x][pivot]
+                    else: 
+                        k[pivot][i] -= t.e[x][i] / t.e[x][pivot]
+
+        for x in range(freeCount):
+            vector = []
+            for i in range(t.m - 1):
+                if i == free[x]:
+                    vector += ['1']
+                elif isPivot[i]:
+                    vector += [str(k[i][free[x]])]
+                else:
+                    vector += ['0']
+            print 'C' + str(x) + str(vector).replace('\'', '')
+            if x == freeCount - 1:
+                print 'C0...C' + str(x) + ' can be any integer.'
+            else:
+                print '+'
+
+
+                
+
+            
+            
+
+            
 def parseNumber(s):
     if '/' in s:
         ss = s.split('/')
@@ -248,6 +311,8 @@ def execute(line):
             dic[line[1]].value()
         elif (line[0] == ':rank'):
             dic[line[1]].rank()
+        elif (line[0] == ':solve'):
+            dic[line[1]].solve()
         else:
             print "Can't recognize the instruction."
     elif (len(line)  < 3 or line[1] != '='):
@@ -281,7 +346,6 @@ def execute(line):
 def main():
     while True:
         sys.stdout.write(cl('>>>', 'blue') + ' ')
-        # print "%s" % cl('>>>', 'blue') + ' ' 
         line = sys.stdin.readline().strip('\n').split()
         if (len(line) == 0):
             continue
