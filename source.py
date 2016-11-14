@@ -169,8 +169,8 @@ class matrix:
             
             if (pivot == -1):
                 continue 
-
-            swap(e[n], e[pivot])
+            
+            c.e[n], c.e[pivot] = c.e[pivot], c.e[n]
             for j in range(n + 1, c.n):
                 for k in range(i, c.m)[::-1]:
                     e[j][k] -= e[j][i] / e[n][i] * e[n][k]
