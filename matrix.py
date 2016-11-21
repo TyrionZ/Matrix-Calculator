@@ -80,7 +80,16 @@ class matrix:
             r.e += [copy.deepcopy(other.e[i])]
 
         return r
-   
+    
+    def multiply(self, x):
+        c = copy.deepcopy(self)
+        e = c.e
+        for i in range(c.n):
+            for j in range(c.m):
+                e[i][j] *= x
+
+        return c
+
     def column(self, x):
         if (x >= self.m):
             print "Error: Invaild column number."
@@ -218,7 +227,7 @@ class matrix:
                             k[pivot][j] -= k[i][j] * t.e[x][i] / t.e[x][pivot]
                     else: 
                         k[pivot][i] -= t.e[x][i] / t.e[x][pivot]
-
+        e = []
         for x in range(freeCount):
             vector = []
             for i in range(t.m - 1):
@@ -233,3 +242,46 @@ class matrix:
                 print 'C0...C' + str(x) + ' can be any integer.'
             else:
                 print '+'
+            e += vector
+
+        return matrix(freeCount, t.m - 1, e)
+
+    def union(self, other):
+        u = self % other
+        t = u.transposition().simplify()
+
+        e = []
+        for i in range(t.n):
+            pivot = -1
+            for j in range(t.m):
+                if (t.e[i][j] != rational.number(0)):
+                    pivot = j
+                    break 
+            e += u.e[j]
+
+        return matrix(t.n, inter.m, e)
+
+    def intersect(self, other):
+        u = self % other
+        t = u.transposition().simplify()
+
+        a = []
+        isPivot = [False for i in range(t.m)]
+        for i in range(t.n):
+            for j in range(t.m):
+                if (t.e[i][j] != rational.number(0)):
+                    if j < self.n:
+                        a += self.e[j]
+                    isPivot[j] = True
+                    break 
+        
+        e = []
+        for i in range(self.n, t.m):
+            if (!isPivot[i]):
+                v = matrix(1, self.m, [rational.number(0) for i in range(self.m)])
+                for j in range(len(a)):
+                    v += a[j] * t.e[j][i]
+
+                e += v
+
+        return matrix(len(e), self.m, e)
