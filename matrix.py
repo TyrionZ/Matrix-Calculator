@@ -1,3 +1,6 @@
+import rational
+import copy
+
 class matrix:
     def __init__(self, n = 0, m = 0, e = []): 
         self.n = n
@@ -124,6 +127,25 @@ class matrix:
                     e[j][k] -= e[j][i] / e[n][i] * e[n][k]
             n += 1
         c.n = n
+        return c
+    
+    def simplify(self):
+        c = self.guass() 
+        e = c.e
+        for i in range(c.n):
+            pivot = -1
+            for j in range(c.m):
+                if e[i][j] != rational.number(0):
+                    pivot = j
+                    break
+
+            for j in range(c.m)[::-1]:
+                e[i][j] /= e[i][pivot]
+
+            for j in range(i):
+                for k in range(pivot, c.m)[::-1]:
+                    e[j][k] -= e[i][k] * e[j][pivot] / e[i][pivot]
+
         return c
 
     def value(x):

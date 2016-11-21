@@ -1,11 +1,7 @@
 import sys
 import copy
 from termcolor import colored as cl
-
-# rational number
 import rational
-
-# matrix
 import matrix
 
 def parseNumber(s):
@@ -93,6 +89,8 @@ def execute(line):
             res = dic[line[2]].transposition()
         elif (line[3] == '-g'):
             res = dic[line[2]].guass()
+        elif (line[3] == '-sg'):
+            res = dic[line[2]].simplify()
         elif (len(line) < 5):
             print "Can't recognize the instruction."
             return 
