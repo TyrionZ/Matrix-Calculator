@@ -170,7 +170,7 @@ class matrix:
             if (pivot == -1):
                 continue 
             
-            c.e[n], c.e[pivot] = c.e[pivot], c.e[n]
+            e[n], e[pivot] = e[pivot], e[n]
             for j in range(n + 1, c.n):
                 for k in range(i, c.m)[::-1]:
                     e[j][k] -= e[j][i] / e[n][i] * e[n][k]
@@ -278,11 +278,11 @@ def parseNumber(s):
     else:
         return number(int(s))
 
-def readMatrix():
+def readMatrix(f = sys.stdin):
     m = 0
     e = []
     while True:
-        line = sys.stdin.readline().strip('\n').split()
+        line = f.readline().strip('\n').split()
         if (len(line) == 1 and line[0] == 'end'):
             return matrix(len(e), m, e) 
         if m == 0:
@@ -300,7 +300,37 @@ def readMatrix():
             e += [row]
 
 # execution division
-dic = {}    
+dic = {}
+def save():
+    f = open('/home/tyrionz/.matrix.bak', 'w')
+    for p in dic:
+        x = dic[p]
+        f.write(p + '\n')
+        for i in range(x.n):
+            for j in range(x.m):
+                f.write(str(x.e[i][j]) + ' ')
+            f.write('\n')
+        f.write('end\n')
+    f.close()
+    
+
+def load(s = '/home/tyrionz/.matrix.bak'):
+    f = open(s, 'r')
+    while True:
+        line = f.readline()
+        if line == '':
+            return 
+        if line == '\n':
+            continue 
+        
+        dic[line.strip('\n')] = readMatrix(f)
+    f.close()
+    
+def clear():
+    global dic
+    dic = {}
+
+
 def execute(line):
     if (line[0][0] == ':'):
         if (line[0] == ':show'):
@@ -313,6 +343,8 @@ def execute(line):
             dic[line[1]].rank()
         elif (line[0] == ':solve'):
             dic[line[1]].solve()
+        elif (line[0] == ':clear'):
+            clear()
         else:
             print "Can't recognize the instruction."
     elif (len(line)  < 3 or line[1] != '='):
@@ -344,6 +376,7 @@ def execute(line):
             pass
 
 def main():
+    load()
     while True:
         sys.stdout.write(cl('>>>', 'blue') + ' ')
         line = sys.stdin.readline().strip('\n').split()
@@ -354,8 +387,10 @@ def main():
 
         try:
             execute(line)
+            save()
         except Exception, e:
             print e
+
 
 if __name__ == '__main__':
     main()
