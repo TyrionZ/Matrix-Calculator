@@ -66,50 +66,54 @@ def clear():
 
 
 def execute(line):
-    if (line[0][0] == ':'):
-        if (line[0] == ':show'):
-            dic[line[1]].show()
-        elif (line[0] == ':read'):
-            dic[line[1]] = readMatrix()
-        elif (line[0] == ':value'):
-            dic[line[1]].value()
-        elif (line[0] == ':rank'):
-            dic[line[1]].rank()
-        elif (line[0] == ':solve'):
-            dic[line[1]].solve()
-        elif (line[0] == ':clear'):
-            clear()
+    try:
+        if (line[0][0] == ':'):
+            if (line[0] == ':show'):
+                dic[line[1]].show()
+            elif (line[0] == ':read'):
+                dic[line[1]] = readMatrix()
+            elif (line[0] == ':value'):
+                dic[line[1]].value()
+            elif (line[0] == ':rank'):
+                dic[line[1]].rank()
+            elif (line[0] == ':solve'):
+                dic[line[1]].solve()
+            elif (line[0] == ':clear'):
+                clear()
+            else:
+                print "Can't recognize the instruction."
+        elif (len(line)  < 3 or line[1] != '='):
+            print "Can't recognize the instruction."
         else:
-            print "Can't recognize the instruction."
-    elif (len(line)  < 3 or line[1] != '='):
-        print "Can't recognize the instruction."
-    else:
-        if (len(line) == 3):
-            res = copy.deepcopy(dic[line[2]])
-        elif (line[3] == '-t'):
-            res = dic[line[2]].transposition()
-        elif (line[3] == '-g'):
-            res = dic[line[2]].guass()
-        elif (line[3] == '-sg'):
-            res = dic[line[2]].simplify()
-        elif (len(line) < 5):
-            print "Can't recognize the instruction."
-            return 
-        elif (line[3] == '+'):
-            res = dic[line[2]] + dic[line[4]]
-        elif (line[3] == '-'):
-            res = dic[line[2]] - dic[line[4]]
-        elif (line[3] == '*'):
-            res = dic[line[2]] * dic[line[4]]
-        elif (line[3] == '/'):
-            res = dic[line[2]] / dic[line[4]]
-        elif (line[3] == '%'):
-            res = dic[line[2]] % dic[line[4]]
-        
-        try:
+            if (len(line) == 3):
+                res = copy.deepcopy(dic[line[2]])
+            elif (line[3] == '-t'):
+                res = dic[line[2]].transposition()
+            elif (line[3] == '-g'):
+                res = dic[line[2]].guass()
+            elif (line[3] == '-sg'):
+                res = dic[line[2]].simplify()
+            elif (len(line) < 5):
+                print "Can't recognize the instruction."
+                return 
+            elif (line[3] == '+'):
+                res = dic[line[2]] + dic[line[4]]
+            elif (line[3] == '-'):
+                res = dic[line[2]] - dic[line[4]]
+            elif (line[3] == '*'):
+                res = dic[line[2]] * dic[line[4]]
+            elif (line[3] == '/'):
+                res = dic[line[2]] / dic[line[4]]
+            elif (line[3] == '%'):
+                res = dic[line[2]] % dic[line[4]]
+            elif (line[3] == 'U'):
+                res = dic[line[2]].union(dic[line[4]])
+            elif (line[3] == 'I'):
+                res = dic[line[2]].intersect(dic[line[4]])
             dic[line[0]] = res
-        except:
-            pass
+    except Exception as e:
+        raise e
+
 
 def main():
     load()
@@ -124,7 +128,7 @@ def main():
         try:
             execute(line)
             save()
-        except Exception, e:
+        except Exception as e:
             print e
 
 

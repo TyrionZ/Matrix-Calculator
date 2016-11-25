@@ -15,7 +15,7 @@ class matrix:
 
     def __add__(self, other):
         if self.n != other.n or self.m != other.m:
-            print "Error: The two matrices are of different size."
+            raise Exception("Error: The two matrices are of different size.")
             return 
         
         r = copy.deepcopy(self)
@@ -27,7 +27,7 @@ class matrix:
 
     def __sub__(self, other):
         if self.n != other.n or self.m != other.m:
-            print "Error: The two matrices are of different size."
+            raise Exception("Error: The two matrices are of different size.")
             return 
         
         r = copy.deepcopy(self)
@@ -39,8 +39,8 @@ class matrix:
 
     def __mul__(self, other):
         if self.m != other.n:
-            print "Error: The first matrix's number of cloumns isn't equal to the second matrix's number of rows."
-            return 
+            raise Exception("Error: The first matrix's number of cloumns isn't equal to the second matrix's number of rows.")
+            return False 
 
         e = []
 
@@ -58,8 +58,7 @@ class matrix:
     # combine two matrices with the same number of rows.
     def __div__(self, other):
         if (self.n != other.n):
-            print "Error: The two matrices are of different rational.number of rows."
-            return 
+            raise Exception("Error: The two matrices are of different rational.number of rows.")
         
         r = copy.deepcopy(self)
         r.m += other.m
@@ -71,8 +70,7 @@ class matrix:
     # combine two matrices with the same number of cloumns.
     def __mod__(self, other):
         if (self.m != other.m):
-            print "Error: The two matrices are of different number of cloumns."
-            return 
+            raise Exception("Error: The two matrices are of different number of cloumns.")
         
         r = copy.deepcopy(self)
         r.n += other.n
@@ -92,7 +90,7 @@ class matrix:
 
     def column(self, x):
         if (x >= self.m):
-            print "Error: Invaild column number."
+            raise Exception("Error: Invaild column number.")
             return 
 
         vector = []
@@ -102,8 +100,7 @@ class matrix:
 
     def row(self, x):
         if (x >= self.n):
-            print "Error: Invaild row number."
-            return 
+            raise Exception("Error: Invaild row number.")
 
         return matrix(1, self.m, [copy.deepcopy(self.e[x])])
 
@@ -159,9 +156,8 @@ class matrix:
 
     def value(x):
         if (x.n != x.m):
-            print "Error: The matrix isn't a determinant."
-            return 
-        
+            raise Exception("Error: The matrix isn't a determinant.")
+            
         x = x.guass()
         product = rational.number(1)
         for i in range(x.n):
@@ -188,7 +184,8 @@ class matrix:
         t = self.guass()
         if (t.n == t.m):
             print "It seems that there is no solution to this equation."
-            return 
+            return
+
         sol = [0 for i in range(t.m - 1)]
         isPivot = [False for i in  range(t.m - 1)]
         for x in range(t.n)[::-1]:
@@ -257,9 +254,10 @@ class matrix:
                 if (t.e[i][j] != rational.number(0)):
                     pivot = j
                     break 
-            e += u.e[j]
+            if pivot >= 0:
+                e += [u.e[pivot]]
 
-        return matrix(t.n, inter.m, e)
+        return matrix(len(e), self.m, e)
 
     def intersect(self, other):
         u = self % other
@@ -271,17 +269,17 @@ class matrix:
             for j in range(t.m):
                 if (t.e[i][j] != rational.number(0)):
                     if j < self.n:
-                        a += self.e[j]
+                        a += [self.row(j)]
                     isPivot[j] = True
                     break 
         
         e = []
         for i in range(self.n, t.m):
             if isPivot[i] == False:
-                v = matrix(1, self.m, [rational.number(0) for i in range(self.m)])
+                v = matrix(1, self.m, [[rational.number(0) for x in range(self.m)]])
                 for j in range(len(a)):
-                    v += multiply(a[j], t.e[j][i])
+                    v += a[j].multiply(t.e[j][i])
 
-                e += v
-
+                e += [copy.deepcopy(v.e[0])]
+        
         return matrix(len(e), self.m, e)
