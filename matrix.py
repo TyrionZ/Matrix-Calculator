@@ -277,10 +277,10 @@ class matrix:
         
         e = []
         for i in range(self.n, t.m):
-            if (!isPivot[i]):
+            if isPivot[i] == False:
                 v = matrix(1, self.m, [rational.number(0) for i in range(self.m)])
                 for j in range(len(a)):
-                    v += a[j] * t.e[j][i]
+                    v += multiply(a[j], t.e[j][i])
 
                 e += v
 

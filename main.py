@@ -3,6 +3,7 @@ import copy
 from termcolor import colored as cl
 import rational
 import matrix
+import os
 
 def parseNumber(s):
     if '/' in s:
@@ -35,7 +36,7 @@ def readMatrix(f = sys.stdin):
 # execution division
 dic = {}
 def save():
-    f = open('/home/tyrionz/.matrix.bak', 'w')
+    f = open(os.path.expanduser('~') + '/.matrix.bak', 'w')
     for p in dic:
         x = dic[p]
         f.write(p + '\n')
@@ -47,8 +48,8 @@ def save():
     f.close()
     
 
-def load(s = '/home/tyrionz/.matrix.bak'):
-    f = open(s, 'r')
+def load(s = '/.matrix.bak'):
+    f = open(os.path.expanduser('~') + s, 'r')
     while True:
         line = f.readline()
         if line == '':
