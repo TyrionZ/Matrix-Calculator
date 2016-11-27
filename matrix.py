@@ -1,6 +1,12 @@
 import rational
 import copy
 
+def identity(n):
+    e = [[rational.number(0) for i in range(n)] for j in range(n)]
+    for i in range(n):
+        e[i][i] = rational.number(1);
+    return matrix(n, n, e)
+
 class matrix:
     def __init__(self, n = 0, m = 0, e = []): 
         self.n = n
@@ -79,6 +85,7 @@ class matrix:
 
         return r
     
+
     def multiply(self, x):
         c = copy.deepcopy(self)
         e = c.e
@@ -283,3 +290,19 @@ class matrix:
                 e += [copy.deepcopy(v.e[0])]
         
         return matrix(len(e), self.m, e)
+
+    def inverse(self):
+        if (self.n != self.m):
+            raise Exception("Its rows and columns aren't equal.")
+        t = self.guass()
+        if t.n != self.n:
+            raise Exception("It isn't a inversable matrix")
+        
+        t = self / identity(self.n)
+        t = t.simplify()
+        e = []
+        for i in range(t.n):
+            e += [copy.deepcopy(t.e[i][t.n:])]
+
+        return matrix(t.n, t.n, e)
+
