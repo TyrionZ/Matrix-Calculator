@@ -93,6 +93,8 @@ def execute(line):
                 res = dic[line[2]].guass()
             elif (line[3] == '-sg'):
                 res = dic[line[2]].simplify()
+            elif (line[3] == '-1'):
+                res = dic[line[2]].inverse()
             elif (len(line) < 5):
                 print "Can't recognize the instruction."
                 return 
