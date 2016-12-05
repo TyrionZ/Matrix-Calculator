@@ -1,16 +1,16 @@
 import sys
 import copy
 from termcolor import colored as cl
-import rational
-import matrix
+from rational import number
+from matrix import matrix
 import os
 
 def parseNumber(s):
     if '/' in s:
         ss = s.split('/')
-        return rational.number(int(ss[0]), int(ss[1]))
+        return number(int(ss[0]), int(ss[1]))
     else:
-        return rational.number(int(s))
+        return number(int(s))
 
 def readMatrix(f = sys.stdin):
     m = 0
@@ -18,7 +18,7 @@ def readMatrix(f = sys.stdin):
     while True:
         line = f.readline().strip('\n').split()
         if (len(line) == 1 and line[0] == 'end'):
-            return matrix.matrix(len(e), m, e) 
+            return matrix(len(e), m, e) 
         if m == 0:
             m = len(line)
         elif m != len(line):
@@ -48,8 +48,8 @@ def save():
     f.close()
     
 
-def load(s = '/.matrix.bak'):
-    f = open(os.path.expanduser('~') + s, 'r')
+def load(s = '.bak'):
+    f = open(os.path.expanduser('~') + '/.matrix.bak', 'r')
     while True:
         line = f.readline()
         if line == '':
